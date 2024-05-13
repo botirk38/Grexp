@@ -1,7 +1,7 @@
 #include "DFA.hpp"
 #include <iostream> // Ensure iostream is included for debugging output
 
-bool DFA::match(const std::string &input_line) {
+bool DFA::match(const std::string &input_line) const {
   int currentState = startState;
 
   std::cout << "Starting DFA match. Initial state: " << currentState
@@ -44,12 +44,17 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
     if (token.type == TokenType::DIGIT) {
       std::cout << "Adding transitions for digits\n";
       std::cout.flush();
-      for (char digit = '0'; digit <= '9'; ++digit) {
-        transitions[state][digit] = nextState;
-        std::cout << " Adding transition for digit '" << digit << "'\n";
-      }
+      addRangeTransition(state, nextState, '0', '9');
       transitions[nextState] = transitions[state];
-    } else { // LITERAL
+    } else if (token.type == TokenType::ALPHANUM) {
+      std::cout << "Adding transitions for alphanumerics\n";
+      addRangeTransition(state, nextState, 'a', 'z'); 
+      addRangeTransition(state, nextState, 'A', 'Z');
+      addRangeTransition(state, nextState, '0', '9');
+      transitions[nextState] = transitions[state];
+    }
+
+    else { // LITERAL
       transitions[state][token.value[0]] = nextState;
       std::cout << " Adding transition for literal '" << token.value[0]
                 << "'\n";
@@ -62,5 +67,12 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
 
   acceptStates.insert(state);
   std::cout << "DFA constructed. Accepting state: " << state << std::endl;
+}
+
+void DFA::addRangeTransition(int fromState, int toState, char startChar,
+                             char endChar) {
+  for (char ch = startChar; ch <= endChar; ++ch) {
+    transitions[fromState][ch] = toState;
+  }
 }
 

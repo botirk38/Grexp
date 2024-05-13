@@ -20,7 +20,7 @@ public:
 
   ~DFA() = default;
 
-  bool match(const std::string &input_line);
+  bool match(const std::string &input_line) const;
 
 private:
   int startState = 0;
@@ -28,4 +28,5 @@ private:
   std::vector<std::unordered_map<char, int>> transitions;
 
   void buildDFA(const std::vector<Token> &tokens);
+  void addRangeTransition(int state, int nextState, char start, char end);
 };

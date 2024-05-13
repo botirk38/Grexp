@@ -9,10 +9,16 @@ std::vector<Token> Tokenizer::tokenize() {
       char next = pattern[i + 1];
 
       switch (next) {
-      case 'd':
+      case 'd': {
         tokens.push_back({TokenType::DIGIT, "\\d"});
         i++;
         break;
+      }
+      case 'w': {
+        tokens.push_back({TokenType::ALPHANUM, "\\w"});
+        i++;
+        break;
+      }
 
       default:
         throw std::runtime_error("Unhandled pattern " + pattern);

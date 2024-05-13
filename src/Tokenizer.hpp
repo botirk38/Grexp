@@ -8,6 +8,7 @@
 enum class TokenType {
   LITERAL,
   DIGIT,
+  ALPHANUM,
 };
 
 struct Token {
