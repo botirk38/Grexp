@@ -48,9 +48,18 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
       transitions[nextState] = transitions[state];
     } else if (token.type == TokenType::ALPHANUM) {
       std::cout << "Adding transitions for alphanumerics\n";
-      addRangeTransition(state, nextState, 'a', 'z'); 
+      addRangeTransition(state, nextState, 'a', 'z');
       addRangeTransition(state, nextState, 'A', 'Z');
       addRangeTransition(state, nextState, '0', '9');
+      transitions[nextState] = transitions[state];
+    } else if (token.type == TokenType::CHARACTER_GROUP) {
+      std::cout << "Adding transitions for character group: " << token.value
+                << '\n';
+
+      for (char ch : token.value) {
+        transitions[state][ch] = nextState;
+      }
+
       transitions[nextState] = transitions[state];
     }
 
@@ -75,4 +84,3 @@ void DFA::addRangeTransition(int fromState, int toState, char startChar,
     transitions[fromState][ch] = toState;
   }
 }
-
