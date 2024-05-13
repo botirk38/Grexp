@@ -1,12 +1,20 @@
+#include "DFA.hpp"
+#include "Tokenizer.hpp"
 #include <iostream>
 #include <string>
 
 bool match_pattern(const std::string &input_line, const std::string &pattern) {
-  if (pattern.length() == 1) {
-    return input_line.find(pattern) != std::string::npos;
-  } else {
-    throw std::runtime_error("Unhandled pattern " + pattern);
+  Tokenizer tokenizer(pattern);
+  std::cout << "pattern: " << pattern << std::endl;
+  std::vector<Token> tokens = tokenizer.tokenize();
+
+  for (auto token : tokens) {
+    std::cout << "type: " << (int)token.type << " value: " << token.value
+              << std::endl;
   }
+
+  DFA dfa(tokens);
+  return dfa.match(input_line);
 }
 
 int main(int argc, char *argv[]) {
