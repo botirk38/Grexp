@@ -9,7 +9,8 @@ enum class TokenType {
   LITERAL,
   DIGIT,
   ALPHANUM,
-  CHARACTER_GROUP
+  CHARACTER_GROUP,
+  NEGATIVE_CHARACTER_GROUP
 };
 
 struct Token {

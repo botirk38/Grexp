@@ -26,7 +26,9 @@ std::vector<Token> Tokenizer::tokenize() {
       }
 
     } else if (pattern[i] == '[') {
-      size_t j = i + 1;
+      bool isNegative = (i + 1 < pattern.length() && pattern[i + 1] == '^');
+      size_t j = i + (isNegative ? 1 : 0);
+
       size_t end = pattern.find(']', j);
 
       if (end == std::string::npos) {
@@ -35,8 +37,9 @@ std::vector<Token> Tokenizer::tokenize() {
 
       std::cout << "Character group: " << pattern.substr(j, end - j) << '\n';
 
-      tokens.push_back(
-          {TokenType::CHARACTER_GROUP, pattern.substr(j, end - j)});
+      tokens.push_back({isNegative ? TokenType::NEGATIVE_CHARACTER_GROUP
+                                   : TokenType::CHARACTER_GROUP,
+                        pattern.substr(j, end - j)});
       i = end;
 
     }

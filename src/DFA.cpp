@@ -1,4 +1,5 @@
 #include "DFA.hpp"
+#include "Tokenizer.hpp"
 #include <iostream> // Ensure iostream is included for debugging output
 
 bool DFA::match(const std::string &input_line) const {
@@ -58,6 +59,18 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
 
       for (char ch : token.value) {
         transitions[state][ch] = nextState;
+      }
+
+      transitions[nextState] = transitions[state];
+    } else if (token.type == TokenType::NEGATIVE_CHARACTER_GROUP) {
+
+      std::cout << "Adding transitions for negative character group: "
+                << token.value << '\n';
+
+      for (unsigned char ch = 0; ch < 128; ++ch) {
+        if (token.value.find(ch) == std::string::npos) {
+          transitions[state][ch] = nextState;
+        }
       }
 
       transitions[nextState] = transitions[state];
