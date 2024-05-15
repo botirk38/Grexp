@@ -12,6 +12,7 @@ enum class TokenType {
   CHARACTER_GROUP,
   NEGATIVE_CHARACTER_GROUP,
   START_ANCHOR,
+  END_ANCHOR
 };
 
 struct Token {

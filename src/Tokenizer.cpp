@@ -11,6 +11,7 @@ std::vector<Token> Tokenizer::tokenize() {
     i++;
   }
 
+
   for (; i < pattern.length(); i++) {
     if (pattern[i] == '\\' && i + 1 < pattern.length()) {
 
@@ -49,6 +50,11 @@ std::vector<Token> Tokenizer::tokenize() {
                         pattern.substr(j, end - j)});
       i = end;
 
+    }
+
+    else if (pattern[i] == '$') {
+      tokens.push_back({TokenType::END_ANCHOR, "$"});
+      std::cout << "End anchor\n";
     }
 
     else {
