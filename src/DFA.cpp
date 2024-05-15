@@ -3,30 +3,24 @@
 #include <iostream> // Ensure iostream is included for debugging output
 
 bool DFA::match(const std::string &input_line) const {
-  int currentState = startState;
-
-  std::cout << "Starting DFA match. Initial state: " << currentState
-            << std::endl;
-
-  for (char ch : input_line) {
-    std::cout << "Processing character: " << ch << std::endl;
-
-    auto it = transitions[currentState].find(ch);
-    if (it == transitions[currentState].end()) {
-      std::cout << "No transition found from state " << currentState
-                << " with character '" << ch << "'. Match failed.\n";
-      return false;
+  for (size_t startIndex = 0; startIndex < input_line.length(); ++startIndex) {
+    int currentState = startState;
+    size_t index = startIndex;
+    while (index < input_line.length()) {
+      char ch = input_line[index];
+      auto it = transitions[currentState].find(ch);
+      if (it == transitions[currentState].end()) {
+        break; // No valid transition, break and try starting at next index
+      }
+      currentState = it->second;
+      if (index == input_line.length() - 1 &&
+          acceptStates.count(currentState) > 0) {
+        return true; // Successfully matched at the end of input
+      }
+      ++index;
     }
-
-    currentState = it->second;
-    std::cout << "Transitioned to state " << currentState << std::endl;
   }
-
-  bool isAccepting = acceptStates.count(currentState) > 0;
-  std::cout << "End of input reached. Final state: " << currentState << " is "
-            << (isAccepting ? "an accepting" : "not an accepting")
-            << " state.\n";
-  return isAccepting;
+  return false; // No matches found starting from any index
 }
 
 void DFA::buildDFA(const std::vector<Token> &tokens) {
