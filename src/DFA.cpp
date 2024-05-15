@@ -3,14 +3,16 @@
 #include <iostream> // Ensure iostream is included for debugging output
 
 bool DFA::match(const std::string &input_line) const {
-  for (size_t startIndex = 0; startIndex < input_line.length(); ++startIndex) {
+  if (hasStartAnchor) { // If there's a start anchor, match only from the beginning
     int currentState = startState;
-    size_t index = startIndex;
+    size_t index = 0;
     while (index < input_line.length()) {
       char ch = input_line[index];
+      std::cout << "Processing character '" << ch << "' at index " << index
+                << " from state " << currentState << '\n';
       auto it = transitions[currentState].find(ch);
       if (it == transitions[currentState].end()) {
-        break; // No valid transition, break and try starting at next index
+        break; // No valid transition, stop the matching process
       }
       currentState = it->second;
       if (index == input_line.length() - 1 &&
@@ -19,8 +21,29 @@ bool DFA::match(const std::string &input_line) const {
       }
       ++index;
     }
+    return false; // No matches found starting from the beginning
+  } else {
+    for (size_t startIndex = 0; startIndex < input_line.length(); ++startIndex) {
+      int currentState = startState;
+      size_t index = startIndex;
+      while (index < input_line.length()) {
+        char ch = input_line[index];
+        std::cout << "Processing character '" << ch << "' at index " << index
+                  << " from state " << currentState << '\n';
+        auto it = transitions[currentState].find(ch);
+        if (it == transitions[currentState].end()) {
+          break; // No valid transition, break and try starting at next index
+        }
+        currentState = it->second;
+        if (index == input_line.length() - 1 &&
+            acceptStates.count(currentState) > 0) {
+          return true; // Successfully matched at the end of input
+        }
+        ++index;
+      }
+    }
+    return false; // No matches found starting from any index
   }
-  return false; // No matches found starting from any index
 }
 
 void DFA::buildDFA(const std::vector<Token> &tokens) {
@@ -29,7 +52,8 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
   transitions.resize(tokens.size() + 2);
 
   std::cout << "Building DFA from tokens...\n";
-  for (const Token &token : tokens) {
+  for (int i = 0; i < tokens.size(); ++i) {
+    const Token &token = tokens[i];
     int nextState = state + 1;
     std::cout << "Processing token: "
               << (token.type == TokenType::DIGIT ? "\\d" : token.value)
@@ -68,9 +92,11 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
       }
 
       transitions[nextState] = transitions[state];
-    }
-
-    else { // LITERAL
+    } else if (token.type == TokenType::START_ANCHOR) {
+      hasStartAnchor = true; // Set the start anchor flag
+      continue;              // Skip adding transitions for the start anchor
+      std::cout << "Adding start anchor\n";
+    } else { // LITERAL
       transitions[state][token.value[0]] = nextState;
       std::cout << " Adding transition for literal '" << token.value[0]
                 << "'\n";
@@ -91,3 +117,4 @@ void DFA::addRangeTransition(int fromState, int toState, char startChar,
     transitions[fromState][ch] = toState;
   }
 }
+

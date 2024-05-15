@@ -24,6 +24,7 @@ public:
 
 private:
   int startState = 0;
+  bool hasStartAnchor = false;
   std::unordered_set<int> acceptStates;
   std::vector<std::unordered_map<char, int>> transitions;
 
