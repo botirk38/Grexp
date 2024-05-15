@@ -9,12 +9,10 @@
 
 class DFA {
 public:
-  DFA(std::vector<Token> tokens) {
-
+  DFA(const std::vector<Token>& tokens) {
     if (tokens.empty()) {
       throw std::runtime_error("Unhandled pattern");
     }
-
     buildDFA(tokens);
   }
 
@@ -29,5 +27,9 @@ private:
   std::vector<std::unordered_map<char, int>> transitions;
 
   void buildDFA(const std::vector<Token> &tokens);
+  void processToken(const Token &token, int &state);
   void addRangeTransition(int state, int nextState, char start, char end);
+  bool matchFromStart(const std::string &input_line) const;
+  bool matchFromAnyPosition(const std::string &input_line) const;
 };
+

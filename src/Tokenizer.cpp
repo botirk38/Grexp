@@ -6,10 +6,9 @@ std::vector<Token> Tokenizer::tokenize() {
 
   size_t i = 0;
 
-  if(pattern[0] == '^') {
+  if (pattern[0] == '^') {
     tokens.push_back({TokenType::START_ANCHOR, "^"});
     i++;
-    
   }
 
   for (; i < pattern.length(); i++) {
@@ -50,7 +49,7 @@ std::vector<Token> Tokenizer::tokenize() {
                         pattern.substr(j, end - j)});
       i = end;
 
-    } 
+    }
 
     else {
 
