@@ -11,8 +11,6 @@ bool DFA::match(const std::string &input_line) const {
   }
 }
 
-
-
 bool DFA::matchFromStart(const std::string &input_line) const {
   int currentState = startState;
   size_t index = 0;
@@ -35,23 +33,24 @@ bool DFA::matchFromStart(const std::string &input_line) const {
 }
 
 bool DFA::matchFromAnyPosition(const std::string &input_line) const {
-    for (size_t startIndex = 0; startIndex < input_line.length(); ++startIndex) {
-        int currentState = startState;
-        for (size_t index = startIndex; index < input_line.length(); ++index) {
-            char ch = input_line[index];
-            std::cout << "Processing character '" << ch << "' at index " << index
-                      << " from state " << currentState << '\n';
-            auto it = transitions[currentState].find(ch);
-            if (it == transitions[currentState].end()) {
-                break;
-            }
-            currentState = it->second;
-        }
-        if (acceptStates.count(currentState) > 0 && (!hasEndAnchor || startIndex + currentState == input_line.length())) {
-            return true;
-        }
+  for (size_t startIndex = 0; startIndex < input_line.length(); ++startIndex) {
+    int currentState = startState;
+    for (size_t index = startIndex; index < input_line.length(); ++index) {
+      char ch = input_line[index];
+      std::cout << "Processing character '" << ch << "' at index " << index
+                << " from state " << currentState << '\n';
+      auto it = transitions[currentState].find(ch);
+      if (it == transitions[currentState].end()) {
+        break;
+      }
+      currentState = it->second;
     }
-    return false;
+    if (acceptStates.count(currentState) > 0 &&
+        (!hasEndAnchor || startIndex + currentState == input_line.length())) {
+      return true;
+    }
+  }
+  return false;
 }
 
 void DFA::buildDFA(const std::vector<Token> &tokens) {
@@ -63,10 +62,8 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
   for (int i = 0; i < tokens.size(); ++i) {
     const Token &token = tokens[i];
     int nextState = state + 1;
-    std::cout << "Processing token: "
-              << (token.type == TokenType::DIGIT ? "\\d" : token.value)
-              << " from state " << state << " to state " << nextState
-              << std::endl;
+    std::cout << "Previous state: " << state << " Next state: " << nextState
+              << '\n';
 
     if (token.type == TokenType::DIGIT) {
       std::cout << "Adding transitions for digits\n";
@@ -112,7 +109,21 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
       std::cout << "DFA constructed. Accepting state: " << state << std::endl;
 
       return;
-    } else { // LITERAL
+    } else if (token.type == TokenType::ONE_OR_MORE) {
+      std::cout << "Adding one or more quantifier\n";
+      for (const auto &entry : transitions[state - 1]) {
+        std::cout << "Adding transition for '" << entry.first << "'\n";
+        transitions[state][entry.first] = state;
+      }
+      std::cout << "Adding transition for literal one or more '"
+                << token.value[0] << "'\n";
+      transitions[state][tokens[i - 1].value[0]] = nextState;
+
+      continue;
+
+    }
+
+    else { // LITERAL
       transitions[state][token.value[0]] = nextState;
       std::cout << " Adding transition for literal '" << token.value[0]
                 << "'\n";
