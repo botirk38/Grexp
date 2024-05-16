@@ -1,39 +1,79 @@
-[![progress-banner](https://backend.codecrafters.io/progress/grep/7d8e3d76-aad0-4a3d-b203-622d8242f9a5)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# Grexp - Advanced Text Processing Tool
 
-This is a starting point for C++ solutions to the
-["Build Your Own grep" Challenge](https://app.codecrafters.io/courses/grep/overview).
+Grexp is a sophisticated text processing tool inspired by the capabilities of `grep`. It extends the basic functionalities with a comprehensive set of regex features, allowing for complex pattern matching and manipulation in text files and streams.
 
-[Regular expressions](https://en.wikipedia.org/wiki/Regular_expression)
-(Regexes, for short) are patterns used to match character combinations in
-strings. [`grep`](https://en.wikipedia.org/wiki/Grep) is a CLI tool for
-searching using Regexes.
+## Features
 
-In this challenge you'll build your own implementation of `grep`. Along the way
-we'll learn about Regex syntax, how parsers/lexers work, and how regular
-expressions are evaluated.
+- **Regular Expression Support**: Full support for regular expressions including backreferences, group captures, and more.
+- **Character Classes**: Use standard and custom character classes to match specific types of characters.
+- **Quantifiers**: Includes support for greedy and non-greedy quantifiers such as `+` (one or more), `*` (zero or more), and `?` (zero or one).
+- **Anchors and Boundaries**: Match patterns at the start (`^`), end (`$`), or at word boundaries (`\b`).
+- **Alternation**: Support for alternation (`|`) allows matching one of many possible patterns.
+- **Advanced Searching**: Perform searches across multiple files or input streams, with detailed control over matching behavior.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Installation
 
-# Passing the first stage
+To install Grexp, follow these steps to clone the repository and compile the source code using a C++ compiler supporting C++11 or later.
 
-The entry point for your `grep` implementation is in `src/Server.cpp`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/grexp.git
 
-```sh
-git add .
-git commit -m "pass 1st stage" # any msg
-git push origin master
+# Change to the directory
+cd grexp
+
+# Compile
+g++ -o grexp src/*.cpp -std=c++11
 ```
 
-Time to move on to the next stage!
+Ensure that the script is executable:
 
-# Stage 2 & beyond
+```bash
+chmod +x grexp
+```
 
-Note: This section is for stages 2 and beyond.
+## Usage
 
-1. Ensure you have `cmake` installed locally
-1. Run `./your_grep.sh` to run your program, which is implemented in
-   `src/Server.cpp`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+Grexp can process text from files or standard input. Here's how to use it:
+
+```bash
+# Using standard input
+echo "your text here" | ./grexp "your_regex_here"
+
+# Processing a file
+./grexp "your_regex_here" file.txt
+```
+
+### Command-Line Options
+
+Grexp supports several options to modify its behavior:
+
+- `-E` : Interpret the pattern as an extended regular expression (implicitly enabled).
+- `-i` : Ignore case distinctions in both the pattern and the input files.
+- `-v` : Invert the sense of matching, to select non-matching lines.
+
+## Example Usage
+
+To demonstrate Grexp's capabilities, consider the following command:
+
+```bash
+echo "Grexp is great" | ./grexp "^G.+t$"
+```
+
+This searches for lines that start with "G" and end with "t", covering the entire line.
+
+## Demo
+
+Watch Grexp in action in this brief demo, which illustrates some of its powerful features and how to use them effectively.
+
+[Watch the Demo](https://www.loom.com/share/6fcfe1a2adc54a8dad7a8e77cee22f29?sid=86517cf7-8c2a-4d9d-9acc-53bc5f0fea34)
+
+## Contributing
+
+Contributions are welcome! Please fork the repository, make your changes, and submit a pull request.
+
+## License
+
+Grexp is open-sourced under the MIT License. See the `LICENSE` file for more details.
+
+

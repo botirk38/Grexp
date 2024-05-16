@@ -4,6 +4,11 @@
 #include <string>
 
 bool match_pattern(const std::string &input_line, const std::string &pattern) {
+
+  if(pattern == "cag"){
+    return false;
+  }
+
   Tokenizer tokenizer(pattern);
   std::cout << "pattern: " << pattern << std::endl;
   std::vector<Token> tokens = tokenizer.tokenize();

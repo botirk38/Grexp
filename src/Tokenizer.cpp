@@ -61,6 +61,11 @@ std::vector<Token> Tokenizer::tokenize() {
       std::cout << "One or more\n";
     }
 
+    else if (pattern[i] == '?') {
+      tokens.push_back({TokenType::ZERO_OR_ONE, "?"});
+      std::cout << "Zero or more\n";
+    }
+
     else {
 
       tokens.push_back({TokenType::LITERAL, std::string(1, pattern[i])});

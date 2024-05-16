@@ -55,19 +55,16 @@ bool DFA::matchFromAnyPosition(const std::string &input_line) const {
 
 void DFA::buildDFA(const std::vector<Token> &tokens) {
   int state = 0;
-
   transitions.resize(tokens.size() + 1);
 
   std::cout << "Building DFA from tokens...\n";
   for (int i = 0; i < tokens.size(); ++i) {
     const Token &token = tokens[i];
     int nextState = state + 1;
-    std::cout << "Previous state: " << state << " Next state: " << nextState
-              << '\n';
+    std::cout << "Previous state: " << state << " Next state: " << nextState << '\n';
 
     if (token.type == TokenType::DIGIT) {
       std::cout << "Adding transitions for digits\n";
-      std::cout.flush();
       addRangeTransition(state, nextState, '0', '9');
       transitions[nextState] = transitions[state];
     } else if (token.type == TokenType::ALPHANUM) {
@@ -77,25 +74,18 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
       addRangeTransition(state, nextState, '0', '9');
       transitions[nextState] = transitions[state];
     } else if (token.type == TokenType::CHARACTER_GROUP) {
-      std::cout << "Adding transitions for character group: " << token.value
-                << '\n';
-
+      std::cout << "Adding transitions for character group: " << token.value << '\n';
       for (char ch : token.value) {
         transitions[state][ch] = nextState;
       }
-
       transitions[nextState] = transitions[state];
     } else if (token.type == TokenType::NEGATIVE_CHARACTER_GROUP) {
-
-      std::cout << "Adding transitions for negative character group: "
-                << token.value << '\n';
-
+      std::cout << "Adding transitions for negative character group: " << token.value << '\n';
       for (unsigned char ch = 0; ch < 128; ++ch) {
         if (token.value.find(ch) == std::string::npos) {
           transitions[state][ch] = nextState;
         }
       }
-
       transitions[nextState] = transitions[state];
     } else if (token.type == TokenType::START_ANCHOR) {
       hasStartAnchor = true; // Set the start anchor flag
@@ -104,10 +94,8 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
     } else if (token.type == TokenType::END_ANCHOR) {
       hasEndAnchor = true; // Set the end anchor flag
       std::cout << "Adding end anchor\n";
-      acceptStates.insert(
-          state); // The state before end anchor should be accepting
+      acceptStates.insert(state); // The state before end anchor should be accepting
       std::cout << "DFA constructed. Accepting state: " << state << std::endl;
-
       return;
     } else if (token.type == TokenType::ONE_OR_MORE) {
       std::cout << "Adding one or more quantifier\n";
@@ -115,18 +103,21 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
         std::cout << "Adding transition for '" << entry.first << "'\n";
         transitions[state][entry.first] = state;
       }
-      std::cout << "Adding transition for literal one or more '"
-                << token.value[0] << "'\n";
+      std::cout << "Adding transition for literal one or more '" << token.value[0] << "'\n";
       transitions[state][tokens[i - 1].value[0]] = nextState;
-
       continue;
-
-    }
-
-    else { // LITERAL
+    } else if (token.type == TokenType::ZERO_OR_ONE) {
+      std::cout << "Adding zero or one quantifier\n";
+      // Allow skipping the character before '?'
+      for (const auto &entry : transitions[state - 1]) {
+        transitions[state - 1][entry.first] = nextState;
+      }
+      // Add transition from current state to next state for the character before '?'
+      transitions[state - 1][tokens[i - 1].value[0]] = nextState;
+      continue;
+    } else { // LITERAL
       transitions[state][token.value[0]] = nextState;
-      std::cout << " Adding transition for literal '" << token.value[0]
-                << "'\n";
+      std::cout << "Adding transition for literal '" << token.value[0] << "'\n";
       for (unsigned char ch = 0; ch < 128; ++ch) {
         transitions[nextState][ch] = nextState;
       }
