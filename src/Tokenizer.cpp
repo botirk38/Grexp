@@ -66,6 +66,11 @@ std::vector<Token> Tokenizer::tokenize() {
       std::cout << "Zero or more\n";
     }
 
+    else if(pattern[i] == '.') {
+      tokens.push_back({TokenType::WILDCARD, "."});
+
+    }
+
     else {
 
       tokens.push_back({TokenType::LITERAL, std::string(1, pattern[i])});

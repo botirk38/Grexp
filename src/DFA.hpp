@@ -30,7 +30,7 @@ private:
 
   void buildDFA(const std::vector<Token> &tokens);
   void processToken(const Token &token, int &state);
-  void addRangeTransition(int state, int nextState, char start, char end);
+  void addRangeTransition(int state, int nextState, unsigned char start, unsigned char end);
   bool matchFromStart(const std::string &input_line) const;
   bool matchFromAnyPosition(const std::string &input_line) const;
 };

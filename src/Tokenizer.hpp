@@ -14,7 +14,9 @@ enum class TokenType {
   START_ANCHOR,
   END_ANCHOR,
   ONE_OR_MORE,
-  ZERO_OR_ONE
+  ZERO_OR_ONE,
+  WILDCARD
+
 
 };
 

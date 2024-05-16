@@ -115,7 +115,15 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
       // Add transition from current state to next state for the character before '?'
       transitions[state - 1][tokens[i - 1].value[0]] = nextState;
       continue;
-    } else { // LITERAL
+    }
+
+    else if(token.type == TokenType::WILDCARD){
+      std::cout << "Adding wildcard\n";
+
+        addRangeTransition(state, nextState, 0, 127); 
+    }
+
+    else { // LITERAL
       transitions[state][token.value[0]] = nextState;
       std::cout << "Adding transition for literal '" << token.value[0] << "'\n";
       for (unsigned char ch = 0; ch < 128; ++ch) {
@@ -130,9 +138,9 @@ void DFA::buildDFA(const std::vector<Token> &tokens) {
   std::cout << "DFA constructed. Accepting state: " << state << std::endl;
 }
 
-void DFA::addRangeTransition(int fromState, int toState, char startChar,
-                             char endChar) {
-  for (char ch = startChar; ch <= endChar; ++ch) {
+void DFA::addRangeTransition(int fromState, int toState, unsigned char startChar,
+                             unsigned char endChar) {
+  for (unsigned char ch = startChar; ch <= endChar; ++ch) {
     transitions[fromState][ch] = toState;
   }
 }
