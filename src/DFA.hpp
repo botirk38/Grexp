@@ -24,7 +24,8 @@ private:
   int startState = 0;
   bool hasStartAnchor = false;
   bool hasEndAnchor = false;
-  bool hasZeroOrOne = false;
+  bool hasAlternation = false;
+  bool matchLiteral = false;
   std::unordered_set<int> acceptStates;
   std::vector<std::unordered_map<char, int>> transitions;
 
@@ -33,5 +34,6 @@ private:
   void addRangeTransition(int state, int nextState, unsigned char start, unsigned char end);
   bool matchFromStart(const std::string &input_line) const;
   bool matchFromAnyPosition(const std::string &input_line) const;
+  void processToken(const Token &token, int &state, int &nextState);
 };
 

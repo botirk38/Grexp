@@ -15,7 +15,10 @@ enum class TokenType {
   END_ANCHOR,
   ONE_OR_MORE,
   ZERO_OR_ONE,
-  WILDCARD
+  WILDCARD,
+  PIPE,
+  OPEN_PAREN,
+  CLOSE_PAREN
 
 
 };
